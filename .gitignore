@@ -26,6 +26,8 @@ credentials.json
 service_account.json
 service-account.json
 *service*account*.json
+vertexKey.json
+*vertex*.json
 *.key
 
 # Debug logs

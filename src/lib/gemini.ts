@@ -1,83 +1,63 @@
-import { VertexAI } from "@google-cloud/vertexai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenAI } from "@google/genai";
 import fs from "fs";
 import path from "path";
 import { Incident, HindsightMemoryRecall, AgentComparisonResult } from "../types/incident";
 
 export class GeminiAgentService {
-  private vertexAI: VertexAI | null = null;
-  private genAI: GoogleGenerativeAI | null = null;
+  private client: GoogleGenAI | null = null;
   private modelName: string;
-  private mode: "VERTEX" | "AI_STUDIO" | "MOCK" = "MOCK";
 
   constructor() {
     this.modelName = process.env.GEMINI_MODEL || "gemini-3.8-flash";
+    const project = process.env.GOOGLE_CLOUD_PROJECT || "studio-2514006965-97712";
+    const location = process.env.GOOGLE_CLOUD_LOCATION || "global";
 
-    const projectId = process.env.GOOGLE_CLOUD_PROJECT || "";
-    const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
-    const apiKey = process.env.GEMINI_API_KEY || process.env.VERTEX_AI_API_KEY || "";
-
-    // 1. Check for Service Account JSON Key (Highest priority for Google Cloud Vertex AI credits)
-    const possibleKeyFiles = ["service-account.json", "service_account.json", "credentials.json", "vertex_key.json"];
-    let credentialsPath: string | null = null;
+    // 1. Locate the Vertex AI key file
+    const possibleKeyFiles = ["vertexKey.json", "service-account.json", "service_account.json", "credentials.json"];
     for (const keyFile of possibleKeyFiles) {
-      const fullPath = path.join(process.cwd(), keyFile);
+      const fullPath = path.resolve(process.cwd(), keyFile);
       if (fs.existsSync(fullPath)) {
-        credentialsPath = fullPath;
+        process.env.GOOGLE_APPLICATION_CREDENTIALS = fullPath;
         break;
       }
     }
 
-    if (process.env.GOOGLE_APPLICATION_CREDENTIALS && fs.existsSync(process.env.GOOGLE_APPLICATION_CREDENTIALS)) {
-      credentialsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
-    }
-
-    // Initialize Google Cloud Vertex AI if Project ID or credentials exist
-    if (projectId || credentialsPath) {
-      try {
-        let authProjectId = projectId;
-        if (!authProjectId && credentialsPath) {
-          const creds = JSON.parse(fs.readFileSync(credentialsPath, "utf-8"));
-          authProjectId = creds.project_id || "";
-        }
-
-        if (authProjectId) {
-          this.vertexAI = new VertexAI({
-            project: authProjectId,
-            location,
-            googleAuthOptions: credentialsPath ? { keyFile: credentialsPath } : undefined
-          });
-          this.mode = "VERTEX";
-          console.log(`[Vertex AI] Initialized for Google Cloud Project: ${authProjectId} (Credits Active)`);
-        }
-      } catch (err) {
-        console.warn("[Vertex AI] Failed to initialize VertexAI client:", err);
-      }
-    }
-
-    // 2. Fallback to API Key mode if Vertex AI was not configured
-    if (!this.vertexAI && apiKey && apiKey !== "your_gemini_or_vertex_api_key_here") {
-      try {
-        this.genAI = new GoogleGenerativeAI(apiKey);
-        this.mode = "AI_STUDIO";
-        console.log("[Gemini] Initialized via API Key mode");
-      } catch (err) {
-        console.warn("[Gemini] Failed to initialize GoogleGenerativeAI client:", err);
-      }
+    try {
+      this.client = new GoogleGenAI({
+        vertexai: true,
+        project,
+        location,
+      });
+      console.log(`[Vertex AI] Connected successfully via Google Cloud project: ${project} (Region: ${location}, Model: ${this.modelName})`);
+    } catch (err) {
+      console.warn("[Vertex AI] Failed to initialize GoogleGenAI client:", err);
     }
   }
 
   private async generate(prompt: string): Promise<string> {
-    if (this.mode === "VERTEX" && this.vertexAI) {
-      const model = this.vertexAI.getGenerativeModel({ model: this.modelName });
-      const resp = await model.generateContent(prompt);
-      return resp.response.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    } else if (this.mode === "AI_STUDIO" && this.genAI) {
-      const model = this.genAI.getGenerativeModel({ model: this.modelName });
-      const resp = await model.generateContent(prompt);
-      return resp.response.text();
+    if (!this.client) return "";
+    try {
+      const resp = await this.client.models.generateContent({
+        model: this.modelName,
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+      });
+      return resp.text || "";
+    } catch (err: any) {
+      console.warn(`[Vertex AI Error for model ${this.modelName}]:`, err?.message || err);
+      // Fallback to gemini-2.5-flash if 3.8-flash hits temporary regional capacity
+      if (this.modelName !== "gemini-2.5-flash") {
+        try {
+          const resp = await this.client.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+          });
+          return resp.text || "";
+        } catch (fallbackErr) {
+          console.warn("[Vertex AI fallback error]:", fallbackErr);
+        }
+      }
+      return "";
     }
-    return "";
   }
 
   /**
@@ -123,7 +103,7 @@ Synthesize a 2-sentence urgent incident briefing that alerts the engineer to the
         hindsightDiagnosis = resHindsight.value;
       }
     } catch (err) {
-      console.warn("[Gemini / Vertex AI] Generation fallback:", err);
+      console.warn("[Vertex AI Gemini] Diagnosis generation fallback:", err);
     }
 
     // High quality deterministic fallbacks if live API call is pending
