@@ -1,0 +1,98 @@
+"use client";
+
+import React from "react";
+import { ShieldAlert, Cpu, Database, Webhook, BrainCircuit, Activity, ExternalLink } from "lucide-react";
+
+interface NavbarProps {
+  onOpenWebhook: () => void;
+  onOpenReflections: () => void;
+  onOpenAudit: () => void;
+  auditCount: number;
+}
+
+export const Navbar: React.FC<NavbarProps> = ({
+  onOpenWebhook,
+  onOpenReflections,
+  onOpenAudit,
+  auditCount
+}) => {
+  return (
+    <header className="sticky top-0 z-40 border-b border-surface-border bg-[#090a0f]/85 backdrop-blur-md px-4 lg:px-8 py-3.5 transition-all">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Brand & Logo */}
+        <div className="flex items-center space-x-3.5">
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-brand-600/30 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-950/40">
+            <ShieldAlert className="w-5 h-5 text-cyan-400 animate-pulse" />
+            <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
+            </span>
+          </div>
+
+          <div>
+            <div className="flex items-center space-x-2">
+              <h1 className="font-extrabold tracking-tight text-lg text-white">
+                INCIDEX<span className="text-cyan-400">.ai</span>
+              </h1>
+              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-semibold uppercase tracking-wider">
+                SRE Memory War Room
+              </span>
+            </div>
+            <p className="text-xs text-gray-400 font-medium">
+              Autonomous Incident Intelligence & Runbook Memory
+            </p>
+          </div>
+        </div>
+
+        {/* Live System Status Badges */}
+        <div className="hidden md:flex items-center space-x-3 text-xs font-mono">
+          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 border border-surface-border text-gray-300">
+            <Cpu className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-gray-400">Brain:</span>
+            <span className="text-emerald-400 font-semibold">Gemini 3.8 Flash</span>
+          </div>
+
+          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 border border-surface-border text-gray-300">
+            <Database className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="text-gray-400">Memory:</span>
+            <span className="text-cyan-400 font-semibold">Hindsight Cloud</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center space-x-2.5">
+          <button
+            onClick={onOpenWebhook}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border hover:border-cyan-500/40 text-gray-200 text-xs font-medium transition-all shadow-sm group"
+          >
+            <Webhook className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+            <span>Test Webhook API</span>
+          </button>
+
+          <button
+            onClick={onOpenReflections}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-brand-600/20 hover:bg-brand-600/30 border border-brand-500/40 text-brand-300 hover:text-brand-200 text-xs font-medium transition-all shadow-sm"
+          >
+            <BrainCircuit className="w-3.5 h-3.5 text-brand-400 animate-spin-slow" />
+            <span className="hidden sm:inline">Reflections (3)</span>
+          </button>
+
+          <button
+            onClick={onOpenAudit}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border text-gray-300 hover:text-white text-xs font-medium transition-all"
+            title="View live Hindsight Retain / Recall audit trail"
+          >
+            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="hidden sm:inline">Audit Logs</span>
+            {auditCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-mono">
+                {auditCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+    </header>
+  );
+};

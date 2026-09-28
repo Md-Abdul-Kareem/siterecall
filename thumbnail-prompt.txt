@@ -1,0 +1,9 @@
+Generate a viral YouTube thumbnail for a high-stakes developer video. Aspect ratio 16:9.
+
+Visual Composition:
+- Dark, futuristic Cyberpunk SRE War Room aesthetic with neon cyan and glowing amber accents.
+- Split visual contrast:
+  - Left side: A panicked, glitching red server screen showing "ERROR 504 DOWNTIME: $90,000 LOST" with a crossed-out generic robot icon.
+  - Right side: A brilliant glowing blue-green holographic neural brain and graph network lighting up with "MEMORY RECALLED: OUTAGE FIXED IN 34 SECONDS" and a green checkmark.
+- Bold, high-contrast, clickable text in modern sans-serif: "AI SRE WITH MEMORY".
+- Clean, crisp, high resolution, cinematic lighting, ultra-modern tech aesthetic, no cluttered background.
