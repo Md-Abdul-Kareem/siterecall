@@ -1,4 +1,8 @@
-Most AI agents are amnesiacs. You give them a production outage at 2 AM, and they hallucinate dangerous textbook advice because they don't remember what happened yesterday.
+# LinkedIn Post (Copy & Paste directly to LinkedIn)
+# Style: Andrej Karpathy (Punchy, technical, under 800 characters)
+# RULE: Zero mentions of "hackathon"
+
+Most AI agents are amnesiacs. You give them a production outage at 2 AM, and they hallucinate dangerous textbook advice because they don't remember yesterday.
 
 When a payment timeout hit our cluster, a stateless LLM suggested restarting the worker pods. That restart wiped in-flight locks and caused a 48-minute cascading outage.
 
@@ -11,4 +15,11 @@ Instead of generic guesses, the agent:
 
 Memory shouldn't just be vector chunks. It needs entity graphs, causality, and reflections over time.
 
+Project repo: https://github.com/Md-Abdul-Kareem/siterecall
+
 #AIAgents #AI #Hindsight #AgentMemory #LLM
+
+--------------------------------------------------------------------------------
+# MANDATORY FIRST COMMENT (Post this immediately after publishing your post):
+Try Hindsight here: https://github.com/vectorize-io/hindsight
+Full technical article: [PASTE YOUR PUBLISHED ARTICLE URL HERE]

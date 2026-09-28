@@ -19,6 +19,7 @@ export class HindsightService {
   private client: HindsightClient | null = null;
   private bankId: string;
   private hasKey: boolean = false;
+  private bankInitialized: boolean = false;
 
   constructor() {
     const apiKey = process.env.HINDSIGHT_API_KEY || "";
@@ -32,9 +33,22 @@ export class HindsightService {
           apiKey,
         });
         this.hasKey = true;
+        console.log(`[Hindsight Cloud] Connected successfully (Bank: ${this.bankId})`);
       } catch (err) {
         console.warn("[Hindsight] Failed to initialize HindsightClient:", err);
       }
+    }
+  }
+
+  private async ensureBank() {
+    if (!this.client || !this.hasKey || this.bankInitialized) return;
+    try {
+      await this.client.createBank(this.bankId, {
+        reflectMission: "SiteRecall Autonomous SRE Incident War Room root cause memory and runbook repository"
+      });
+      this.bankInitialized = true;
+    } catch {
+      this.bankInitialized = true;
     }
   }
 
@@ -44,11 +58,14 @@ export class HindsightService {
   async recall(service: string, alertSnippet: string): Promise<HindsightMemoryRecall> {
     const startTime = Date.now();
     const query = `${service} ${alertSnippet}`;
+    await this.ensureBank();
 
+    let cloudEntitiesRecalled = 0;
     if (this.client && this.hasKey) {
       try {
-        const response = await this.client.recall(this.bankId, query);
+        const response: any = await this.client.recall(this.bankId, query);
         const latency = Date.now() - startTime;
+        cloudEntitiesRecalled = response?.results?.length || response?.memories?.length || 1;
         hindsightAuditLogs.unshift({
           timestamp: new Date().toLocaleTimeString(),
           operation: "RECALL",
@@ -56,7 +73,7 @@ export class HindsightService {
           queryOrContent: query.slice(0, 60) + "...",
           latencyMs: latency,
           status: "SUCCESS",
-          details: `Hindsight Cloud recalled ${(response as any)?.memories?.length || 1} entities across graph hops.`
+          details: `Hindsight Cloud recalled ${cloudEntitiesRecalled} entities across graph hops.`
         });
       } catch (err) {
         console.warn("[Hindsight] Cloud API recall failed, falling back to local memory engine:", err);
@@ -85,20 +102,22 @@ export class HindsightService {
    */
   async retain(incidentId: string, resolution: string, postMortem: string): Promise<boolean> {
     const startTime = Date.now();
+    await this.ensureBank();
     const documentContent = `Incident ${incidentId} resolved. Fix: ${resolution}. Post-Mortem analysis: ${postMortem}`;
 
     if (this.client && this.hasKey) {
       try {
-        await this.client.retain(this.bankId, documentContent);
+        const retainRes: any = await this.client.retain(this.bankId, documentContent);
         const latency = Date.now() - startTime;
+        const totalTokens = retainRes?.usage?.total_tokens || 0;
         hindsightAuditLogs.unshift({
           timestamp: new Date().toLocaleTimeString(),
           operation: "RETAIN",
           targetBank: this.bankId,
-          queryOrContent: `Document ${incidentId}`,
+          queryOrContent: `Incident ${incidentId}`,
           latencyMs: latency,
           status: "SUCCESS",
-          details: "Saved to Hindsight Cloud long-term memory graph."
+          details: `Saved to Hindsight Cloud long-term graph memory (${totalTokens ? totalTokens + ' tokens processed' : 'indexed'}).`
         });
         return true;
       } catch (err) {
@@ -125,6 +144,7 @@ export class HindsightService {
    */
   async reflect(): Promise<SystemicReflection[]> {
     const startTime = Date.now();
+    await this.ensureBank();
 
     if (this.client && this.hasKey) {
       try {

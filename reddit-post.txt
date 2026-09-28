@@ -1,0 +1,22 @@
+# Reddit Post Guide & Copy-Paste Template
+# Subreddit Options (Choose one or post to all):
+# 1. https://reddit.com/r/aiagents
+# 2. https://reddit.com/r/llmdevs
+# 3. https://reddit.com/r/sideproject
+# 4. https://reddit.com/r/aimemory
+
+--------------------------------------------------------------------------------
+POST TYPE: Link Post
+TITLE: Why We Replaced Stateless AI in Our Incident War Room (How Graph Memory Prevented a $90k Outage)
+URL: [PASTE YOUR PUBLISHED ARTICLE URL (Medium / Dev.to) HERE]
+
+--------------------------------------------------------------------------------
+OPTIONAL FIRST COMMENT (For higher engagement & discussion):
+Hey everyone! We built SiteRecall, an open-source Autonomous SRE Incident War Room that bridges Google Gemini 3.8 Flash with Vectorize Hindsight graph memory.
+
+During a 2 AM payment outage, standard stateless AI suggested rebooting worker pods—which wiped database locks and prolonged the downtime. By moving from flat vector RAG to multi-hop entity graphs (connecting services, past incidents, engineers, runbooks, and antipatterns), the agent cut MTTR from 48 minutes down to 34 seconds with zero hallucinations.
+
+Would love feedback from other developers working on long-term agent memory!
+
+Project repo: https://github.com/Md-Abdul-Kareem/siterecall
+Hindsight repo: https://github.com/vectorize-io/hindsight

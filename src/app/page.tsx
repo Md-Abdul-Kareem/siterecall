@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { SAMPLE_INCIDENTS } from "@/lib/scenarios";
 import { Incident, AgentComparisonResult, HindsightMemoryRecall } from "@/types/incident";
 import { HindsightLogEntry } from "@/lib/hindsight";
@@ -23,6 +23,7 @@ export default function Home() {
   const [isResolved, setIsResolved] = useState(false);
   const [terminalLogs, setTerminalLogs] = useState<string[]>([]);
   const [auditLogs, setAuditLogs] = useState<HindsightLogEntry[]>([]);
+  const lastWebhookTimestampRef = useRef<number>(Date.now());
 
   // Modals state
   const [isWebhookOpen, setIsWebhookOpen] = useState(false);
@@ -61,6 +62,32 @@ export default function Home() {
 
   useEffect(() => {
     runAnalysis(SAMPLE_INCIDENTS[0]);
+  }, []);
+
+  // Live polling for external incoming webhooks (e.g. from syllabusproai.com or curl)
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/webhook");
+        const data = await res.json();
+        if (data?.latest && data.latest.timestamp > lastWebhookTimestampRef.current) {
+          lastWebhookTimestampRef.current = data.latest.timestamp;
+          setSelectedScenarioIndex(-1);
+          setIncident(data.latest.incident);
+          setMemory(data.latest.memory);
+          setComparison(data.latest.comparison);
+          setIsResolved(false);
+          setTerminalLogs([]);
+          if (data.auditLogs) {
+            setAuditLogs(data.auditLogs);
+          }
+        }
+      } catch {
+        // Silent poll
+      }
+    }, 2500);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleSelectScenario = (index: number) => {
