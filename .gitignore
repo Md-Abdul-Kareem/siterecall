@@ -24,6 +24,8 @@
 *.pem
 credentials.json
 service_account.json
+service-account.json
+*service*account*.json
 *.key
 
 # Debug logs
