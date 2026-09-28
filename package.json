@@ -1,8 +1,8 @@
 {
-  "name": "incidex",
+  "name": "siterecall",
   "version": "1.0.0",
   "private": true,
-  "description": "Autonomous SRE Incident War Room & Memory Engine powered by Hindsight & Gemini Flash",
+  "description": "SiteRecall: Autonomous SRE Incident War Room & Memory Engine powered by Hindsight & Gemini Flash",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

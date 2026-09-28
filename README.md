@@ -1,4 +1,4 @@
-# INCIDEX: Autonomous SRE War Room & Memory Engine
+# SiteRecall: Autonomous SRE War Room & Memory Engine
 
 > **Stop fighting recurring outages with amnesiac AI.**  
 > Built with [Vectorize Hindsight](https://github.com/vectorize-io/hindsight) biomimetic graph memory and **Google Gemini 3.8 Flash**.
@@ -19,11 +19,11 @@ Every time a production incident occurs at 2 AM, on-call engineers face alert fa
 
 ---
 
-## 🧠 The Solution: INCIDEX
+## 🧠 The Solution: SiteRecall
 
-**INCIDEX** transforms incident response by giving AI persistent, entity-aware cognitive memory using **Vectorize Hindsight**:
+**SiteRecall** transforms incident response by giving AI persistent, entity-aware cognitive memory using **Vectorize Hindsight**:
 
-1. **`Recall` (Sub-100ms Associative Traversal):** The moment an alert triggers, INCIDEX traverses historical incident graphs to locate identical failure signatures, the original resolver, and past post-mortems.
+1. **`Recall` (Sub-100ms Associative Traversal):** The moment an alert triggers, SiteRecall traverses historical incident graphs to locate identical failure signatures, the original resolver, and past post-mortems.
 2. **Antipattern Guardrails:** Warns engineers against deadly actions that previously caused cascading outages.
 3. **Verified Safe Runbooks:** Pre-loads the verified mitigation command for 1-click execution.
 4. **`Retain` (Continuous Learning):** Once mitigated, the resolution and post-mortem are retained in the Hindsight knowledge graph.
@@ -37,7 +37,7 @@ Every time a production incident occurs at 2 AM, on-call engineers face alert fa
 [Prometheus / Sentry / Datadog / Webhook]
                    │
                    ▼
-       [ INCIDEX Ingress Gateway ]
+      [ SiteRecall Ingress Gateway ]
                    │
          ┌─────────┴─────────┐
          ▼                   ▼
@@ -62,8 +62,8 @@ Every time a production incident occurs at 2 AM, on-call engineers face alert fa
 
 ### 1. Clone & Install Dependencies
 ```bash
-git clone https://github.com/YOUR_USERNAME/incidex.git
-cd incidex
+git clone https://github.com/YOUR_USERNAME/siterecall.git
+cd siterecall
 npm install
 ```
 
@@ -77,7 +77,7 @@ Inside `.env.local`:
 ```bash
 # Hindsight Cloud (Use promo code: MEMHACK99 on ui.hindsight.vectorize.io for $50 free credits)
 HINDSIGHT_API_KEY=your_hindsight_api_key_here
-HINDSIGHT_BANK_ID=incidex_production_sre
+HINDSIGHT_BANK_ID=siterecall_production_sre
 
 # Google Vertex AI / Gemini API Key
 GEMINI_API_KEY=your_gemini_api_key_here

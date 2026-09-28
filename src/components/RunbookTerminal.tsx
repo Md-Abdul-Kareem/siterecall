@@ -112,7 +112,7 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
               <div>
                 <div className="font-bold">Outage Mitigated in 34 Seconds!</div>
                 <div className="text-[11px] text-emerald-400/80">
-                  Zero downtime, zero double charges. Memory saved in Hindsight bank: <code>incidex_production_sre</code>
+                  Zero downtime, zero double charges. Memory saved in Hindsight bank: <code>siterecall_production_sre</code>
                 </div>
               </div>
             </div>

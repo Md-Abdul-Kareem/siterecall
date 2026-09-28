@@ -23,7 +23,7 @@ export class HindsightService {
   constructor() {
     const apiKey = process.env.HINDSIGHT_API_KEY || "";
     const baseUrl = process.env.HINDSIGHT_API_URL || "https://api.hindsight.vectorize.io";
-    this.bankId = process.env.HINDSIGHT_BANK_ID || "incidex_production_sre";
+    this.bankId = process.env.HINDSIGHT_BANK_ID || "siterecall_production_sre";
 
     if (apiKey && apiKey !== "your_hindsight_api_key_here") {
       try {

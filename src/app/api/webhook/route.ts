@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Webhook processed successfully by INCIDEX SRE Brain",
+      message: "Webhook processed successfully by SiteRecall SRE Brain",
       incident: customIncident,
       memory,
       comparison,

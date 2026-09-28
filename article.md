@@ -6,7 +6,7 @@ The engineer executed the restart. It was a disaster. Restarting the master work
 
 The tragedy wasn’t that the bug was unprecedented. The tragedy was that our team had already debugged and resolved this exact failure eighteen days earlier. A senior engineer had spent four hours determining that the payment partner had rotated public certs without updating downstream keep-alive pools, and had authored a safe, non-destructive sidecar patch. But because our AI tools possess zero organizational memory, our system behaved as if it were born yesterday.
 
-That catastrophic 2 AM post-mortem convinced us to build **INCIDEX**: an autonomous incident intelligence engine anchored by [Vectorize agent memory](https://vectorize.io/what-is-agent-memory) and [Hindsight](https://github.com/vectorize-io/hindsight). Here is the technical breakdown of how we eliminated recurring production outages using biomimetic graph memory.
+That catastrophic 2 AM post-mortem convinced us to build **SiteRecall**: an autonomous incident intelligence engine anchored by [Vectorize agent memory](https://vectorize.io/what-is-agent-memory) and [Hindsight](https://github.com/vectorize-io/hindsight). Here is the technical breakdown of how we eliminated recurring production outages using biomimetic graph memory.
 
 ---
 
@@ -22,9 +22,9 @@ Basic Retrieval-Augmented Generation (RAG) is insufficient here. Splitting runbo
 
 ---
 
-## System Architecture: How INCIDEX Hangs Together
+## System Architecture: How SiteRecall Hangs Together
 
-INCIDEX acts as an autonomous war-room co-pilot. When monitoring systems (Prometheus, Sentry, or custom webhooks) detect an alert, INCIDEX executes a deterministic cognitive loop:
+SiteRecall acts as an autonomous war-room co-pilot. When monitoring systems (Prometheus, Sentry, or custom webhooks) detect an alert, SiteRecall executes a deterministic cognitive loop:
 
 ```
 [ Incoming Alert / Telemetry ]
@@ -60,7 +60,7 @@ To build this, we leveraged the official TypeScript client from [Hindsight docs]
 
 ### 1. Multi-Hop Associative Memory Recall
 
-When an alert fires, INCIDEX queries the Hindsight memory bank using parallel retrieval strategies (semantic vector match, BM25 keyword search, and entity graph traversal):
+When an alert fires, SiteRecall queries the Hindsight memory bank using parallel retrieval strategies (semantic vector match, BM25 keyword search, and entity graph traversal):
 
 ```typescript
 import { HindsightService } from "@/lib/hindsight";
@@ -88,7 +88,7 @@ Unlike basic vector search, Hindsight extracts entities (such as `payment-gatewa
 Next, we pass the current telemetry along with the recalled memory into Gemini 3.8 Flash. The reasoner is explicitly prompted to flag any dangerous actions:
 
 ```typescript
-const hindsightPrompt = `You are INCIDEX, an SRE Incident Memory Agent.
+const hindsightPrompt = `You are SiteRecall, an SRE Incident Memory Agent.
 Current incident: ${incident.title} in service ${incident.service}.
 Telemetry: ${JSON.stringify(incident.telemetry)}
 
@@ -104,7 +104,7 @@ warns against the deadly antipattern, and references the verified fix.`;
 
 ### 3. Continuous Learning via Retain and Reflect
 
-When the engineer triggers the safe mitigation command and verifies that error rates drop to zero, INCIDEX automatically commits the resolution to Hindsight:
+When the engineer triggers the safe mitigation command and verifies that error rates drop to zero, SiteRecall automatically commits the resolution to Hindsight:
 
 ```typescript
 // Retain the newly resolved incident into the persistent knowledge graph
@@ -122,16 +122,16 @@ const reflections = await hindsight.reflect();
 
 ## Real-World Results: Before vs. After
 
-We evaluated INCIDEX across simulated high-throughput production workloads based on actual food-delivery and e-commerce architectures:
+We evaluated SiteRecall across simulated high-throughput production workloads based on actual food-delivery and e-commerce architectures:
 
-| Metric | Stateless AI Assistant | INCIDEX with Hindsight Memory |
+| Metric | Stateless AI Assistant | SiteRecall with Hindsight Memory |
 | :--- | :--- | :--- |
 | **Mean Time to Diagnose (MTTD)** | 14.5 minutes | **1.2 seconds** |
 | **Mean Time to Resolve (MTTR)** | 48 minutes (cascading failures) | **34 seconds** |
 | **Root-Cause Accuracy** | 42% (generic guesses) | **97.4% (grounded in historical facts)** |
 | **Dangerous Antipattern Rate** | 68% (suggested unsafe reboots) | **0% (explicit memory guardrails)** |
 
-When the same payment timeout occurred during our testing, INCIDEX immediately flashed:
+When the same payment timeout occurred during our testing, SiteRecall immediately flashed:
 > *"Match: 97% similarity to Incident #412 (18 days ago by Priya Sharma). Critical warning: DO NOT restart worker pods—this wipes idempotency locks and causes duplicate charges. Run verified hot-patch `hot-bump-bank-timeout.sh` instead."*
 
 The issue was mitigated in 34 seconds with zero dropped orders.

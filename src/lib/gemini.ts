@@ -40,7 +40,7 @@ Telemetry: ${JSON.stringify(incident.telemetry)}
 Give a brief 2-sentence generic troubleshooting recommendation.`;
 
         // 2. Hindsight Prompt (Empowered with historical graph memory)
-        const hindsightPrompt = `You are INCIDEX, an SRE Incident Memory Agent powered by Hindsight.
+        const hindsightPrompt = `You are SiteRecall, an SRE Incident Memory Agent powered by Hindsight.
 Current incident: ${incident.title} in service ${incident.service}.
 Telemetry: ${JSON.stringify(incident.telemetry)}
 
@@ -92,7 +92,7 @@ Synthesize a 2-sentence urgent incident briefing that alerts the engineer to the
         confidence: 0.52
       },
       hindsight: {
-        agentName: "INCIDEX (With Hindsight Memory)",
+        agentName: "SiteRecall (With Hindsight Memory)",
         diagnosis: hindsightDiagnosis,
         recalledMemory: memory,
         actionablePlan: [

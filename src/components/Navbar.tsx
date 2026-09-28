@@ -32,7 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div>
             <div className="flex items-center space-x-2">
               <h1 className="font-extrabold tracking-tight text-lg text-white">
-                INCIDEX<span className="text-cyan-400">.ai</span>
+                SiteRecall<span className="text-cyan-400">.ai</span>
               </h1>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-semibold uppercase tracking-wider">
                 SRE Memory War Room

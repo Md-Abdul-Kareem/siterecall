@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "INCIDEX | Autonomous SRE War Room & Memory Engine",
+  title: "SiteRecall | Autonomous SRE War Room & Memory Engine",
   description: "Next-generation Incident Response Agent powered by Hindsight Graph Memory and Gemini 3.8 Flash.",
 };
 

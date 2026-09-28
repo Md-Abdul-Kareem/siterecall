@@ -123,7 +123,7 @@ export default function Home() {
           isAnalyzing={isAnalyzing}
         />
 
-        {/* Head-to-Head Comparison (Stateless AI vs INCIDEX Memory) */}
+        {/* Head-to-Head Comparison (Stateless AI vs SiteRecall Memory) */}
         <ComparisonView
           comparison={comparison}
           onExecuteRunbook={handleExecuteRunbook}
