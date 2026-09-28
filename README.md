@@ -79,9 +79,10 @@ Inside `.env.local`:
 HINDSIGHT_API_KEY=your_hindsight_api_key_here
 HINDSIGHT_BANK_ID=siterecall_production_sre
 
-# Google Vertex AI / Gemini API Key
-GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_MODEL=gemini-2.0-flash
+# Google Vertex AI / Gemini 3.8 Flash Configuration
+GEMINI_MODEL=gemini-3.8-flash
+GOOGLE_CLOUD_PROJECT=your_google_cloud_project_id
+GOOGLE_CLOUD_LOCATION=us-central1
 ```
 
 ### 3. Run Locally

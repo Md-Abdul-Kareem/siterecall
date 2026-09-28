@@ -11,7 +11,7 @@ export class GeminiAgentService {
   private mode: "VERTEX" | "AI_STUDIO" | "MOCK" = "MOCK";
 
   constructor() {
-    this.modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash-002";
+    this.modelName = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 
     const projectId = process.env.GOOGLE_CLOUD_PROJECT || "";
     const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
