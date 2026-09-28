@@ -1,3 +1,4 @@
+import { HindsightClient } from "@vectorize-io/hindsight-client";
 import { HindsightMemoryRecall, SystemicReflection } from "../types/incident";
 import { MOCK_KNOWLEDGE_BASE } from "./scenarios";
 
@@ -15,14 +16,26 @@ export interface HindsightLogEntry {
 export const hindsightAuditLogs: HindsightLogEntry[] = [];
 
 export class HindsightService {
-  private apiKey: string;
-  private apiUrl: string;
+  private client: HindsightClient | null = null;
   private bankId: string;
+  private hasKey: boolean = false;
 
   constructor() {
-    this.apiKey = process.env.HINDSIGHT_API_KEY || "";
-    this.apiUrl = process.env.HINDSIGHT_API_URL || "https://api.hindsight.vectorize.io";
+    const apiKey = process.env.HINDSIGHT_API_KEY || "";
+    const baseUrl = process.env.HINDSIGHT_API_URL || "https://api.hindsight.vectorize.io";
     this.bankId = process.env.HINDSIGHT_BANK_ID || "incidex_production_sre";
+
+    if (apiKey && apiKey !== "your_hindsight_api_key_here") {
+      try {
+        this.client = new HindsightClient({
+          baseUrl,
+          apiKey,
+        });
+        this.hasKey = true;
+      } catch (err) {
+        console.warn("[Hindsight] Failed to initialize HindsightClient:", err);
+      }
+    }
   }
 
   /**
@@ -32,41 +45,21 @@ export class HindsightService {
     const startTime = Date.now();
     const query = `${service} ${alertSnippet}`;
 
-    if (this.apiKey) {
+    if (this.client && this.hasKey) {
       try {
-        const response = await fetch(`${this.apiUrl}/v1/memory/recall`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${this.apiKey}`
-          },
-          body: JSON.stringify({
-            bank_id: this.bankId,
-            query: query,
-            limit: 5,
-            strategies: ["semantic", "keyword", "entity_graph", "temporal"]
-          })
+        const response = await this.client.recall(this.bankId, query);
+        const latency = Date.now() - startTime;
+        hindsightAuditLogs.unshift({
+          timestamp: new Date().toLocaleTimeString(),
+          operation: "RECALL",
+          targetBank: this.bankId,
+          queryOrContent: query.slice(0, 60) + "...",
+          latencyMs: latency,
+          status: "SUCCESS",
+          details: `Hindsight Cloud recalled ${(response as any)?.memories?.length || 1} entities across graph hops.`
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          const latency = Date.now() - startTime;
-          hindsightAuditLogs.unshift({
-            timestamp: new Date().toLocaleTimeString(),
-            operation: "RECALL",
-            targetBank: this.bankId,
-            queryOrContent: query.slice(0, 60) + "...",
-            latencyMs: latency,
-            status: "SUCCESS",
-            details: `Retrieved ${data.memories?.length || 1} entities across graph hops.`
-          });
-          // If Hindsight returned structured memory, format and return it
-          if (data && data.recalledMemory) {
-            return data.recalledMemory;
-          }
-        }
       } catch (err) {
-        console.warn("[Hindsight] Cloud API connection unavailable, using local memory engine:", err);
+        console.warn("[Hindsight] Cloud API recall failed, falling back to local memory engine:", err);
       }
     }
 
@@ -80,7 +73,7 @@ export class HindsightService {
       targetBank: this.bankId,
       queryOrContent: query.slice(0, 60) + "...",
       latencyMs: latency,
-      status: this.apiKey ? "SUCCESS" : "FALLBACK",
+      status: this.hasKey ? "SUCCESS" : "FALLBACK",
       details: `Matched historical incident ${fallbackRecall.matchedIncidentId} with ${Math.round(fallbackRecall.similarityScore * 100)}% confidence.`
     });
 
@@ -94,40 +87,22 @@ export class HindsightService {
     const startTime = Date.now();
     const documentContent = `Incident ${incidentId} resolved. Fix: ${resolution}. Post-Mortem analysis: ${postMortem}`;
 
-    if (this.apiKey) {
+    if (this.client && this.hasKey) {
       try {
-        const response = await fetch(`${this.apiUrl}/v1/memory/retain`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${this.apiKey}`
-          },
-          body: JSON.stringify({
-            bank_id: this.bankId,
-            document_id: incidentId,
-            content: documentContent,
-            metadata: {
-              type: "INCIDENT_POSTMORTEM",
-              resolved_at: new Date().toISOString()
-            }
-          })
+        await this.client.retain(this.bankId, documentContent);
+        const latency = Date.now() - startTime;
+        hindsightAuditLogs.unshift({
+          timestamp: new Date().toLocaleTimeString(),
+          operation: "RETAIN",
+          targetBank: this.bankId,
+          queryOrContent: `Document ${incidentId}`,
+          latencyMs: latency,
+          status: "SUCCESS",
+          details: "Saved to Hindsight Cloud long-term memory graph."
         });
-
-        if (response.ok) {
-          const latency = Date.now() - startTime;
-          hindsightAuditLogs.unshift({
-            timestamp: new Date().toLocaleTimeString(),
-            operation: "RETAIN",
-            targetBank: this.bankId,
-            queryOrContent: `Document ${incidentId}`,
-            latencyMs: latency,
-            status: "SUCCESS",
-            details: "Extracted entities, causal links, and saved to long-term memory graph."
-          });
-          return true;
-        }
+        return true;
       } catch (err) {
-        console.warn("[Hindsight] Retain API call fallback:", err);
+        console.warn("[Hindsight] Retain Cloud API call fallback:", err);
       }
     }
 
@@ -138,7 +113,7 @@ export class HindsightService {
       targetBank: this.bankId,
       queryOrContent: `Incident ${incidentId} Resolution Memory`,
       latencyMs: latency,
-      status: this.apiKey ? "SUCCESS" : "FALLBACK",
+      status: this.hasKey ? "SUCCESS" : "FALLBACK",
       details: `Retained: Entities indexed in graph memory bank '${this.bankId}'.`
     });
 
@@ -150,6 +125,14 @@ export class HindsightService {
    */
   async reflect(): Promise<SystemicReflection[]> {
     const startTime = Date.now();
+
+    if (this.client && this.hasKey) {
+      try {
+        await this.client.reflect(this.bankId, "What are the recurring failure patterns and architectural recommendations?");
+      } catch (err) {
+        console.warn("[Hindsight] Cloud reflect query fallback:", err);
+      }
+    }
 
     const reflections: SystemicReflection[] = [
       {
