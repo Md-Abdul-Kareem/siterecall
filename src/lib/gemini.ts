@@ -18,7 +18,7 @@ export class GeminiAgentService {
     const apiKey = process.env.GEMINI_API_KEY || process.env.VERTEX_AI_API_KEY || "";
 
     // 1. Check for Service Account JSON Key (Highest priority for Google Cloud Vertex AI credits)
-    const possibleKeyFiles = ["credentials.json", "service_account.json", "vertex_key.json"];
+    const possibleKeyFiles = ["service-account.json", "service_account.json", "credentials.json", "vertex_key.json"];
     let credentialsPath: string | null = null;
     for (const keyFile of possibleKeyFiles) {
       const fullPath = path.join(process.cwd(), keyFile);
