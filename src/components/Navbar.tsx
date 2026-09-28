@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { ShieldAlert, Cpu, Database, Webhook, BrainCircuit, Activity, ExternalLink } from "lucide-react";
+import { ShieldAlert, Cpu, Database, Webhook, BrainCircuit, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface NavbarProps {
   onOpenWebhook: () => void;
@@ -21,13 +22,18 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Brand & Logo */}
         <div className="flex items-center space-x-3.5">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-brand-600/30 border border-cyan-500/30 text-cyan-400 shadow-lg shadow-cyan-950/40">
+          <motion.div
+            whileHover={{ scale: 1.05, rotate: 3 }}
+            whileTap={{ scale: 0.92 }}
+            transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-brand-600/30 border border-cyan-500/40 text-cyan-400 shadow-lg shadow-cyan-950/40 cursor-pointer"
+          >
             <ShieldAlert className="w-5 h-5 text-cyan-400 animate-pulse" />
             <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
             </span>
-          </div>
+          </motion.div>
 
           <div>
             <div className="flex items-center space-x-2">
@@ -60,27 +66,36 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Action Controls */}
+        {/* Action Controls with Satisfying Spring Physics */}
         <div className="flex items-center space-x-2.5">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={onOpenWebhook}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border hover:border-cyan-500/40 text-gray-200 text-xs font-medium transition-all shadow-sm group"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border hover:border-cyan-500/40 text-gray-200 text-xs font-medium transition-colors shadow-sm group hover:shadow-cyan-950/30"
           >
-            <Webhook className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
+            <Webhook className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-45 transition-transform duration-300" />
             <span>Test Webhook API</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={onOpenReflections}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-brand-600/20 hover:bg-brand-600/30 border border-brand-500/40 text-brand-300 hover:text-brand-200 text-xs font-medium transition-all shadow-sm"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-brand-600/20 hover:bg-brand-600/35 border border-brand-500/40 text-brand-300 hover:text-brand-100 text-xs font-medium transition-colors shadow-sm hover:shadow-brand-950/40"
           >
-            <BrainCircuit className="w-3.5 h-3.5 text-brand-400 animate-spin-slow" />
+            <BrainCircuit className="w-3.5 h-3.5 text-brand-400 animate-pulse" />
             <span className="hidden sm:inline">Reflections (3)</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={onOpenAudit}
-            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border text-gray-300 hover:text-white text-xs font-medium transition-all"
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-surface-100 hover:bg-surface-200 border border-surface-border text-gray-300 hover:text-white text-xs font-medium transition-colors shadow-sm"
             title="View live Hindsight Retain / Recall audit trail"
           >
             <Activity className="w-3.5 h-3.5 text-cyan-400" />
@@ -90,7 +105,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 {auditCount}
               </span>
             )}
-          </button>
+          </motion.button>
         </div>
       </div>
     </header>

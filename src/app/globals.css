@@ -35,27 +35,56 @@ body {
 
 /* Glowing effects */
 .glow-border-cyan {
-  border-color: rgba(6, 182, 212, 0.4);
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+  border-color: rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
 }
 
 .glow-border-amber {
-  border-color: rgba(245, 158, 11, 0.4);
-  box-shadow: 0 0 15px rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.5);
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
 }
 
 .glow-border-red {
-  border-color: rgba(239, 68, 68, 0.4);
-  box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.5);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
 }
 
 .glow-border-emerald {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 }
 
 /* Grid background texture */
 .bg-grid-pattern {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
   background-size: 24px 24px;
+}
+
+/* Shimmer animation for primary action buttons */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.btn-shimmer {
+  background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 50%, #8b5cf6 75%, #06b6d4 100%);
+  background-size: 200% 100%;
+  animation: shimmer 4s infinite linear;
+}
+
+/* Tactile button press feeling */
+.tactile-btn {
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tactile-btn:hover {
+  transform: translateY(-1px);
+}
+
+.tactile-btn:active {
+  transform: translateY(1px) scale(0.97);
 }

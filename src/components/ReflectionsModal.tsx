@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { SystemicReflection } from "../types/incident";
-import { X, BrainCircuit, Sparkles, ShieldCheck, ArrowRight, Lightbulb } from "lucide-react";
+import { X, BrainCircuit, Sparkles, Lightbulb } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface ReflectionsModalProps {
   isOpen: boolean;
@@ -32,7 +33,13 @@ export const ReflectionsModal: React.FC<ReflectionsModalProps> = ({ isOpen, onCl
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-3xl rounded-2xl bg-surface-50 border border-brand-500/40 shadow-2xl p-6 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        className="relative w-full max-w-3xl rounded-2xl bg-surface-50 border border-brand-500/40 shadow-2xl p-6 overflow-hidden"
+      >
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-surface-border">
           <div className="flex items-center space-x-3">
@@ -52,12 +59,14 @@ export const ReflectionsModal: React.FC<ReflectionsModalProps> = ({ isOpen, onCl
             </div>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
-          </button>
+          </motion.button>
         </div>
 
         {/* Modal Body */}
@@ -69,9 +78,11 @@ export const ReflectionsModal: React.FC<ReflectionsModalProps> = ({ isOpen, onCl
             </div>
           ) : (
             reflections.map((refl) => (
-              <div
+              <motion.div
                 key={refl.id}
-                className="p-4 rounded-xl bg-surface-100/70 border border-surface-border hover:border-brand-500/30 transition-all space-y-3"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 rounded-xl bg-surface-100/70 border border-surface-border hover:border-brand-500/40 transition-all space-y-3 shadow-md"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -108,21 +119,23 @@ export const ReflectionsModal: React.FC<ReflectionsModalProps> = ({ isOpen, onCl
                     </span>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             ))
           )}
         </div>
 
         {/* Modal Footer */}
         <div className="pt-3 border-t border-surface-border flex justify-end">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.94 }}
             onClick={onClose}
-            className="px-4 py-2 rounded-xl bg-surface-200 hover:bg-surface-300 text-gray-200 text-xs font-medium transition-all"
+            className="px-4 py-2 rounded-xl bg-surface-200 hover:bg-surface-300 text-gray-200 text-xs font-medium transition-all cursor-pointer shadow-sm"
           >
             Close
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -2,7 +2,8 @@
 
 import React from "react";
 import { Incident } from "../types/incident";
-import { AlertTriangle, Clock, Flame, Server, TrendingUp, DollarSign } from "lucide-react";
+import { AlertTriangle, Clock, Server, DollarSign, Plus } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface IncidentHeaderProps {
   incident: Incident;
@@ -46,62 +47,82 @@ export const IncidentHeader: React.FC<IncidentHeaderProps> = ({
       {/* Top Scenario Switcher Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
         <div className="flex items-center space-x-2 text-xs text-gray-400 font-mono">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
           <span>SELECT PRODUCTION OUTAGE SCENARIO:</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={() => onSelectScenario(0)}
             disabled={isAnalyzing}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               selectedScenarioIndex === 0
-                ? "bg-red-500/20 border border-red-500/50 text-red-300 shadow-sm"
+                ? "bg-red-500/25 border border-red-500/60 text-red-200 shadow-lg shadow-red-950/50"
                 : "bg-surface-100 border border-surface-border text-gray-400 hover:text-gray-200 hover:bg-surface-200"
             }`}
           >
             🍔 Swiggy (Payment 504)
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={() => onSelectScenario(1)}
             disabled={isAnalyzing}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               selectedScenarioIndex === 1
-                ? "bg-amber-500/20 border border-amber-500/50 text-amber-300 shadow-sm"
+                ? "bg-amber-500/25 border border-amber-500/60 text-amber-200 shadow-lg shadow-amber-950/50"
                 : "bg-surface-100 border border-surface-border text-gray-400 hover:text-gray-200 hover:bg-surface-200"
             }`}
           >
             ⚡ Blinkit (Inventory Desync)
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03, y: -1 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={() => onSelectScenario(2)}
             disabled={isAnalyzing}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               selectedScenarioIndex === 2
-                ? "bg-amber-500/20 border border-amber-500/50 text-amber-300 shadow-sm"
+                ? "bg-amber-500/25 border border-amber-500/60 text-amber-200 shadow-lg shadow-amber-950/50"
                 : "bg-surface-100 border border-surface-border text-gray-400 hover:text-gray-200 hover:bg-surface-200"
             }`}
           >
             🛵 Zomato (Rider GPS Freeze)
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04, y: -1 }}
+            whileTap={{ scale: 0.93 }}
+            transition={{ type: "spring", stiffness: 450, damping: 17 }}
             onClick={onTriggerNew}
             disabled={isAnalyzing}
-            className="px-3 py-1.5 rounded-lg text-xs font-medium bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/20 transition-all flex items-center space-x-1"
+            className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25 transition-all flex items-center space-x-1.5 shadow-sm shadow-cyan-950/30 cursor-pointer"
           >
-            <span>+ Custom Alert</span>
-          </button>
+            <Plus className="w-3.5 h-3.5" />
+            <span>Custom Alert</span>
+          </motion.button>
         </div>
       </div>
 
       {/* Main Incident Card */}
-      <div className={`p-5 rounded-2xl bg-surface-50 border transition-all ${
-        incident.status === "RESOLVED"
-          ? "border-emerald-500/40 shadow-lg shadow-emerald-950/20"
-          : "border-red-500/30 shadow-lg shadow-red-950/20"
-      }`}>
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className={`p-5 rounded-2xl bg-surface-50 border transition-all ${
+          incident.status === "RESOLVED"
+            ? "border-emerald-500/40 shadow-xl shadow-emerald-950/20"
+            : "border-red-500/30 shadow-xl shadow-red-950/20"
+        }`}
+      >
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-surface-border">
           <div className="space-y-1.5">
             <div className="flex items-center space-x-3">
@@ -146,7 +167,7 @@ export const IncidentHeader: React.FC<IncidentHeaderProps> = ({
             <span className="text-[11px] font-mono text-gray-400 uppercase">CPU Saturation</span>
             <div className="text-lg font-bold font-mono text-red-400 mt-0.5">{incident.telemetry.cpuUsage}</div>
             <div className="w-full bg-surface-200 h-1 rounded-full mt-1.5 overflow-hidden">
-              <div className="bg-red-500 h-full rounded-full" style={{ width: incident.telemetry.cpuUsage }}></div>
+              <div className="bg-red-500 h-full rounded-full transition-all duration-500" style={{ width: incident.telemetry.cpuUsage }}></div>
             </div>
           </div>
 
@@ -168,7 +189,7 @@ export const IncidentHeader: React.FC<IncidentHeaderProps> = ({
             <span className="text-[10px] text-cyan-300 font-mono">Socket starvation</span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { X, Webhook, Copy, Check, Send, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface WebhookModalProps {
   isOpen: boolean;
@@ -65,7 +66,13 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-2xl rounded-2xl bg-surface-50 border border-cyan-500/40 shadow-2xl p-6 overflow-hidden">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 10 }}
+        transition={{ type: "spring", stiffness: 400, damping: 20 }}
+        className="relative w-full max-w-2xl rounded-2xl bg-surface-50 border border-cyan-500/40 shadow-2xl p-6 overflow-hidden glow-border-cyan"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-surface-border">
           <div className="flex items-center space-x-3">
@@ -85,12 +92,14 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
             </div>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
-          </button>
+          </motion.button>
         </div>
 
         {/* cURL Snippet */}
@@ -98,15 +107,17 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
           <div>
             <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-mono uppercase text-gray-400">cURL Command for Judges & SREs:</span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={handleCopy}
-                className="flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 font-mono"
+                className="flex items-center space-x-1 text-xs text-cyan-400 hover:text-cyan-300 font-mono cursor-pointer"
               >
                 {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? "Copied to clipboard" : "Copy cURL"}</span>
-              </button>
+              </motion.button>
             </div>
-            <div className="p-3 rounded-xl bg-[#07080c] border border-surface-border font-mono text-xs text-cyan-300 overflow-x-auto">
+            <div className="p-3 rounded-xl bg-[#07080c] border border-surface-border font-mono text-xs text-cyan-300 overflow-x-auto shadow-inner">
               <pre className="whitespace-pre-wrap">{curlCommand}</pre>
             </div>
           </div>
@@ -122,7 +133,7 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
                   type="text"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
 
@@ -132,7 +143,7 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
                   type="text"
                   value={service}
                   onChange={(e) => setService(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white focus:outline-none focus:border-cyan-500"
+                  className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white focus:outline-none focus:border-cyan-500 transition-colors"
                 />
               </div>
             </div>
@@ -143,39 +154,43 @@ export const WebhookModal: React.FC<WebhookModalProps> = ({
                 value={errorText}
                 onChange={(e) => setErrorText(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white font-mono focus:outline-none focus:border-cyan-500"
+                className="w-full px-3 py-2 rounded-xl bg-surface-100 border border-surface-border text-xs text-white font-mono focus:outline-none focus:border-cyan-500 transition-colors"
               />
             </div>
 
             <div className="flex justify-end space-x-2 pt-2">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 rounded-xl bg-surface-200 hover:bg-surface-300 text-gray-300 text-xs font-medium transition-all"
+                className="px-4 py-2 rounded-xl bg-surface-200 hover:bg-surface-300 text-gray-300 text-xs font-medium transition-all cursor-pointer"
               >
                 Cancel
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.03, y: -1 }}
+                whileTap={{ scale: 0.95 }}
                 type="submit"
                 disabled={isSubmitting}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-brand-600 hover:from-cyan-400 hover:to-brand-500 text-black font-bold text-xs flex items-center space-x-1.5 shadow-md shadow-cyan-950/40 transition-all disabled:opacity-50"
+                className="px-4 py-2 rounded-xl btn-shimmer hover:brightness-110 text-black font-extrabold text-xs flex items-center space-x-1.5 shadow-lg shadow-cyan-950/50 transition-all disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
-                    <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                    <Sparkles className="w-3.5 h-3.5 animate-spin text-black" />
                     <span>Processing Ingest...</span>
                   </>
                 ) : (
                   <>
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-3.5 h-3.5 text-black" />
                     <span>Send Live Alert</span>
                   </>
                 )}
-              </button>
+              </motion.button>
             </div>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

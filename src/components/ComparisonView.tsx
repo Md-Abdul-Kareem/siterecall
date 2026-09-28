@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { AgentComparisonResult } from "../types/incident";
 import { AlertOctagon, CheckCircle2, ShieldAlert, Sparkles, Terminal, ArrowRight, Zap, XCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ComparisonViewProps {
   comparison: AgentComparisonResult | null;
@@ -43,37 +44,40 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
           </span>
         </div>
 
-        <div className="inline-flex rounded-lg p-0.5 bg-surface-100 border border-surface-border text-xs font-mono">
-          <button
+        <div className="inline-flex rounded-xl p-1 bg-surface-100 border border-surface-border text-xs font-mono">
+          <motion.button
+            whileTap={{ scale: 0.94 }}
             onClick={() => setViewMode("split")}
-            className={`px-3 py-1 rounded-md transition-all ${
+            className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
               viewMode === "split"
-                ? "bg-surface-200 text-white font-semibold shadow-sm"
+                ? "bg-surface-200 text-white font-semibold shadow-md shadow-black/40"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
             Split Comparison
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.94 }}
             onClick={() => setViewMode("hindsight")}
-            className={`px-3 py-1 rounded-md transition-all ${
+            className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
               viewMode === "hindsight"
-                ? "bg-cyan-500/20 text-cyan-300 font-semibold shadow-sm"
+                ? "bg-cyan-500/25 text-cyan-300 font-semibold shadow-md shadow-cyan-950/50"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
             SiteRecall (Memory)
-          </button>
-          <button
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.94 }}
             onClick={() => setViewMode("stateless")}
-            className={`px-3 py-1 rounded-md transition-all ${
+            className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
               viewMode === "stateless"
-                ? "bg-red-500/20 text-red-300 font-semibold shadow-sm"
+                ? "bg-red-500/25 text-red-300 font-semibold shadow-md shadow-red-950/50"
                 : "text-gray-400 hover:text-gray-200"
             }`}
           >
             Stateless AI
-          </button>
+          </motion.button>
         </div>
       </div>
 
@@ -81,7 +85,14 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
       <div className={`grid gap-4 ${viewMode === "split" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"}`}>
         {/* LEFT: Stateless AI (Without Memory) */}
         {(viewMode === "split" || viewMode === "stateless") && (
-          <div className="flex flex-col justify-between p-5 rounded-2xl bg-surface-50 border border-red-500/20 shadow-md relative overflow-hidden group">
+          <motion.div
+            layout
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col justify-between p-5 rounded-2xl bg-surface-50 border border-red-500/20 shadow-md relative overflow-hidden group"
+          >
             <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-28 h-28 bg-red-500/5 rounded-full blur-2xl"></div>
 
             <div>
@@ -138,12 +149,19 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                 Confidence: <strong className="text-gray-300">{Math.round(stateless.confidence * 100)}%</strong> (Uncalibrated generic guess)
               </span>
             </div>
-          </div>
+          </motion.div>
         )}
 
-        {/* RIGHT: INCIDEX (With Hindsight Memory) */}
+        {/* RIGHT: SiteRecall (With Hindsight Memory) */}
         {(viewMode === "split" || viewMode === "hindsight") && (
-          <div className="flex flex-col justify-between p-5 rounded-2xl bg-surface-50 border border-cyan-500/40 shadow-xl shadow-cyan-950/20 relative overflow-hidden glow-border-cyan">
+          <motion.div
+            layout
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="flex flex-col justify-between p-5 rounded-2xl bg-surface-50 border border-cyan-500/40 shadow-xl shadow-cyan-950/20 relative overflow-hidden glow-border-cyan"
+          >
             <div className="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"></div>
 
             <div>
@@ -182,7 +200,7 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       <Zap className="w-3 h-3 text-cyan-400" />
                       <span>Hindsight Memory Insight</span>
                     </span>
-                    <span className="text-[10px] font-mono text-cyan-400">
+                    <span className="text-[10px] font-mono text-cyan-400 font-bold">
                       Match: {Math.round(hindsight.confidence * 100)}%
                     </span>
                   </div>
@@ -217,23 +235,30 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
               </div>
             </div>
 
-            {/* Runbook Action Button */}
+            {/* Runbook Action Button with Tactile Shimmer Feedback */}
             <div className="pt-3 border-t border-surface-border">
               {isResolved ? (
-                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center space-x-2 text-xs font-mono font-bold">
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  className="p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 flex items-center justify-center space-x-2 text-xs font-mono font-bold shadow-lg shadow-emerald-950/30"
+                >
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                   <span>INCIDENT RESOLVED & RETAINED IN HINDSIGHT GRAPH</span>
-                </div>
+                </motion.div>
               ) : (
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.015, y: -1 }}
+                  whileTap={{ scale: 0.96 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 17 }}
                   onClick={() => onExecuteRunbook(hindsight.safeCommand)}
                   disabled={isExecuting}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-brand-600 hover:from-cyan-400 hover:to-brand-500 text-black font-bold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 shadow-lg shadow-cyan-950/40 transition-all transform hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
+                  className="w-full py-3 px-4 rounded-xl btn-shimmer hover:brightness-110 text-black font-extrabold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 shadow-xl shadow-cyan-950/60 cursor-pointer disabled:opacity-50"
                 >
                   {isExecuting ? (
                     <>
                       <Sparkles className="w-4 h-4 animate-spin text-black" />
-                      <span>Executing Runbook & Updating Hindsight...</span>
+                      <span>Executing Runbook & Retaining Memory in Hindsight...</span>
                     </>
                   ) : (
                     <>
@@ -242,10 +267,10 @@ export const ComparisonView: React.FC<ComparisonViewProps> = ({
                       <ArrowRight className="w-3.5 h-3.5 text-black" />
                     </>
                   )}
-                </button>
+                </motion.button>
               )}
             </div>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

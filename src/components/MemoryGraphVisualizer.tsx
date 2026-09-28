@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { HindsightMemoryNode } from "../types/incident";
 import { Network, Database, ShieldAlert, Wrench, User, FileText, ChevronRight, Info } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface MemoryGraphVisualizerProps {
   nodes: HindsightMemoryNode[];
@@ -77,23 +78,26 @@ export const MemoryGraphVisualizer: React.FC<MemoryGraphVisualizerProps> = ({
         </div>
       </div>
 
-      {/* Nodes Interactive Ribbon */}
+      {/* Nodes Interactive Ribbon with Spring Touch */}
       <div className="flex flex-wrap items-center gap-2 mb-4">
         {nodes.map((node, index) => {
           const isSelected = selectedNode?.id === node.id;
           return (
             <React.Fragment key={node.id}>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.92 }}
+                transition={{ type: "spring", stiffness: 450, damping: 15 }}
                 onClick={() => setSelectedNode(node)}
-                className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-mono border transition-all ${
+                className={`flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-mono border transition-all cursor-pointer ${
                   isSelected
-                    ? "border-cyan-400 bg-cyan-500/20 text-white shadow-lg shadow-cyan-950/50 scale-105"
+                    ? "border-cyan-400 bg-cyan-500/25 text-white shadow-xl shadow-cyan-950/60 ring-2 ring-cyan-400/50"
                     : `${getNodeBadgeColor(node.type)} hover:brightness-125`
                 }`}
               >
                 {getNodeIcon(node.type)}
                 <span>{node.label}</span>
-              </button>
+              </motion.button>
               {index < nodes.length - 1 && (
                 <ChevronRight className="w-3.5 h-3.5 text-gray-600 hidden md:inline-block flex-shrink-0" />
               )}
@@ -102,25 +106,34 @@ export const MemoryGraphVisualizer: React.FC<MemoryGraphVisualizerProps> = ({
         })}
       </div>
 
-      {/* Detailed Node Inspector Panel */}
-      {selectedNode && (
-        <div className="p-3.5 rounded-xl bg-surface-100 border border-surface-border flex items-start space-x-3 animate-fadeIn">
-          <div className="p-2 rounded-lg bg-surface-200 text-cyan-400 border border-surface-border flex-shrink-0 mt-0.5">
-            <Info className="w-4 h-4" />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center space-x-2">
-              <span className="text-xs font-bold text-white font-mono">{selectedNode.label}</span>
-              <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded border ${getNodeBadgeColor(selectedNode.type)}`}>
-                {selectedNode.type}
-              </span>
+      {/* Detailed Node Inspector Panel with Smooth Slide Animation */}
+      <AnimatePresence mode="wait">
+        {selectedNode && (
+          <motion.div
+            key={selectedNode.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="p-3.5 rounded-xl bg-surface-100 border border-surface-border flex items-start space-x-3 shadow-md"
+          >
+            <div className="p-2 rounded-lg bg-surface-200 text-cyan-400 border border-surface-border flex-shrink-0 mt-0.5">
+              <Info className="w-4 h-4" />
             </div>
-            <p className="text-xs text-gray-300 leading-relaxed font-sans">
-              {selectedNode.description}
-            </p>
-          </div>
-        </div>
-      )}
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-bold text-white font-mono">{selectedNode.label}</span>
+                <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded border ${getNodeBadgeColor(selectedNode.type)}`}>
+                  {selectedNode.type}
+                </span>
+              </div>
+              <p className="text-xs text-gray-300 leading-relaxed font-sans">
+                {selectedNode.description}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

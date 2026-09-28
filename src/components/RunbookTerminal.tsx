@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Terminal, CheckCircle2, Copy, Check, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 
 interface RunbookTerminalProps {
@@ -24,10 +25,10 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
   useEffect(() => {
     if (isResolved) {
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 100,
+        spread: 80,
         origin: { y: 0.6 },
-        colors: ["#06b6d4", "#10b981", "#6366f1"]
+        colors: ["#06b6d4", "#10b981", "#6366f1", "#f59e0b"]
       });
     }
   }, [isResolved]);
@@ -55,14 +56,16 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
         </div>
 
         <div className="flex items-center space-x-2">
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.92 }}
             onClick={handleCopy}
-            className="flex items-center space-x-1 px-2.5 py-1 rounded bg-surface-200 hover:bg-surface-300 text-gray-300 hover:text-white text-[11px] font-mono transition-all"
+            className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-surface-200 hover:bg-surface-300 text-gray-300 hover:text-white text-[11px] font-mono transition-all shadow-sm cursor-pointer"
             title="Copy command to clipboard"
           >
             {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-gray-400" />}
-            <span>{copied ? "Copied" : "Copy"}</span>
-          </button>
+            <span>{copied ? "Copied!" : "Copy"}</span>
+          </motion.button>
         </div>
       </div>
 
@@ -89,8 +92,11 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
         )}
 
         {logs.map((log, idx) => (
-          <div
+          <motion.div
             key={idx}
+            initial={{ opacity: 0, x: -5 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.15 }}
             className={`leading-relaxed ${
               log.includes("[INFO]")
                 ? "text-gray-400"
@@ -102,13 +108,17 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
             }`}
           >
             {log}
-          </div>
+          </motion.div>
         ))}
 
         {isResolved && (
-          <div className="mt-3 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-between">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="mt-3 p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-300 flex items-center justify-between shadow-lg shadow-emerald-950/40"
+          >
             <div className="flex items-center space-x-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
               <div>
                 <div className="font-bold">Outage Mitigated in 34 Seconds!</div>
                 <div className="text-[11px] text-emerald-400/80">
@@ -119,7 +129,7 @@ export const RunbookTerminal: React.FC<RunbookTerminalProps> = ({
             <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
               100% HEALTHY
             </span>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

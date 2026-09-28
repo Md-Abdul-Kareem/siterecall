@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { X, Activity, Database, CheckCircle2, Clock } from "lucide-react";
+import { X, Activity, Clock } from "lucide-react";
+import { motion } from "framer-motion";
 import { HindsightLogEntry } from "../lib/hindsight";
 
 interface AuditDrawerProps {
@@ -15,7 +16,13 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose, logs 
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/70 backdrop-blur-sm animate-fadeIn">
-      <div className="w-full max-w-md h-full bg-surface-50 border-l border-surface-border p-6 shadow-2xl flex flex-col justify-between overflow-hidden animate-slideLeft">
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+        className="w-full max-w-md h-full bg-surface-50 border-l border-surface-border p-6 shadow-2xl flex flex-col justify-between overflow-hidden"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-surface-border">
           <div className="flex items-center space-x-2.5">
@@ -28,12 +35,14 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose, logs 
             </div>
           </div>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-surface-200 transition-all cursor-pointer"
           >
             <X className="w-5 h-5" />
-          </button>
+          </motion.button>
         </div>
 
         {/* Logs Feed */}
@@ -44,9 +53,11 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose, logs 
             </div>
           ) : (
             logs.map((log, index) => (
-              <div
+              <motion.div
                 key={index}
-                className="p-3 rounded-xl bg-surface-100 border border-surface-border space-y-1.5 text-xs font-mono"
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-3 rounded-xl bg-surface-100 border border-surface-border space-y-1.5 text-xs font-mono shadow-sm"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
@@ -77,7 +88,7 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose, logs 
                 <div className="text-[10px] text-gray-400 truncate">
                   Bank: <span className="text-gray-300">{log.targetBank}</span>
                 </div>
-              </div>
+              </motion.div>
             ))
           )}
         </div>
@@ -85,14 +96,16 @@ export const AuditDrawer: React.FC<AuditDrawerProps> = ({ isOpen, onClose, logs 
         {/* Footer */}
         <div className="pt-3 border-t border-surface-border flex items-center justify-between text-[11px] font-mono text-gray-400">
           <span>Engine: Hindsight v0.10.1</span>
-          <button
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.94 }}
             onClick={onClose}
-            className="px-3 py-1.5 rounded-lg bg-surface-200 text-gray-300 hover:text-white transition-all"
+            className="px-3 py-1.5 rounded-lg bg-surface-200 text-gray-300 hover:text-white transition-all cursor-pointer"
           >
             Close Drawer
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
